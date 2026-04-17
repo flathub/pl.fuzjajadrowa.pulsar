@@ -44,7 +44,6 @@ modules:
       - type: git
         url: https://github.com/FuzjaJadrowa/Pulsar-Bridge.git
         commit: e05a4245e09c6e448a073782efb8876b50c7ac2c
-
   - name: pulsar
     buildsystem: simple
     build-commands:
