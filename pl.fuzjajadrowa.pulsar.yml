@@ -34,6 +34,8 @@ modules:
   - shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json
   - name: pulsar-bridge
     buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/node20/bin
     build-commands:
       - python3 -m PyInstaller --clean --onefile --name pulsar-bridge main.py
       - install -d /app/lib/pulsar/requirements
