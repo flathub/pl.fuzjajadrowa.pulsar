@@ -1,4 +1,4 @@
-﻿app-id: pl.fuzjajadrowa.pulsar
+app-id: pl.fuzjajadrowa.pulsar
 runtime: org.gnome.Platform
 runtime-version: '50'
 sdk: org.gnome.Sdk
@@ -12,6 +12,10 @@ finish-args:
   - --socket=wayland
   - --socket=pulseaudio
   - --device=dri
+  - --filesystem=home
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.PowerManagement
+  - --talk-name=org.freedesktop.ScreenSaver
   - --env=PULSAR_DIST=flatpak
   - --env=PULSAR_REQUIREMENTS_DIR=/app/lib/pulsar/requirements
 build-options:
@@ -43,7 +47,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/FuzjaJadrowa/Pulsar-Bridge.git
-        commit: e05a4245e09c6e448a073782efb8876b50c7ac2c
+        commit: ba76bab39c60c74ae4a98a70a519f1063a43c975
   - name: pulsar
     buildsystem: simple
     build-commands:
@@ -58,5 +62,5 @@ modules:
     sources:
       - type: git
         url: https://github.com/fuzjajadrowa/Pulsar.git
-        commit: d9a8598448a270ad28e77e0ec4896ea7a08f62bf
+        commit: 48e6abe2dee8205f0f167d71ece2e5c5240c41d9
       - cargo-sources.json
