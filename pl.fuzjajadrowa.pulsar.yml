@@ -53,6 +53,8 @@ modules:
       - install -d /app/lib/pulsar/requirements
       - ln -sf /usr/bin/ffmpeg /app/lib/pulsar/requirements/ffmpeg
       - ln -sf /usr/bin/ffprobe /app/lib/pulsar/requirements/ffprobe
+      - npm ci --offline
+      - npm run build
       - cargo --offline build --release --manifest-path src-tauri/Cargo.toml
       - install -Dm755 src-tauri/target/release/Pulsar /app/bin/Pulsar
       - install -Dm644 src-tauri/flatpak/pl.fuzjajadrowa.pulsar.desktop /app/share/applications/pl.fuzjajadrowa.pulsar.desktop
@@ -63,3 +65,4 @@ modules:
         url: https://github.com/fuzjajadrowa/Pulsar.git
         commit: 48e6abe2dee8205f0f167d71ece2e5c5240c41d9
       - cargo-sources.json
+      - node-sources.json
