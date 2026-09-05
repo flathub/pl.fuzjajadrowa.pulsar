@@ -56,7 +56,7 @@ modules:
       - install -d /app/lib/pulsar/requirements
       - ln -sf /usr/bin/ffmpeg /app/lib/pulsar/requirements/ffmpeg
       - ln -sf /usr/bin/ffprobe /app/lib/pulsar/requirements/ffprobe
-      - npm ci --offline
+      - npm ci --offline --cache flatpak-node/npm-cache
       - npm run build
       - cargo --offline build --release --manifest-path src-tauri/Cargo.toml
       - install -Dm755 src-tauri/target/release/Pulsar /app/bin/Pulsar
