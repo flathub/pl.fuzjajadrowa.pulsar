@@ -66,6 +66,6 @@ modules:
     sources:
       - type: git
         url: https://github.com/fuzjajadrowa/Pulsar.git
-        commit: 48e6abe2dee8205f0f167d71ece2e5c5240c41d9
+        commit: 4003cf4041ab5331a5224892caf51c4708cc94e5
       - cargo-sources.json
       - node-sources.json
