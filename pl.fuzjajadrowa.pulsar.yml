@@ -57,8 +57,7 @@ modules:
       - ln -sf /usr/bin/ffmpeg /app/lib/pulsar/requirements/ffmpeg
       - ln -sf /usr/bin/ffprobe /app/lib/pulsar/requirements/ffprobe
       - npm ci --offline --cache flatpak-node/npm-cache
-      - npm run build
-      - cargo --offline build --release --manifest-path src-tauri/Cargo.toml
+      - npm run tauri:build -- --no-bundle
       - install -Dm755 src-tauri/target/release/Pulsar /app/bin/Pulsar
       - install -Dm644 src-tauri/flatpak/pl.fuzjajadrowa.pulsar.desktop /app/share/applications/pl.fuzjajadrowa.pulsar.desktop
       - install -Dm644 src-tauri/flatpak/pl.fuzjajadrowa.pulsar.metainfo.xml /app/share/metainfo/pl.fuzjajadrowa.pulsar.metainfo.xml
