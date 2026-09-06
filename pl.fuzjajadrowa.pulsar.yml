@@ -1,9 +1,10 @@
-﻿app-id: pl.fuzjajadrowa.pulsar
+app-id: pl.fuzjajadrowa.pulsar
 runtime: org.gnome.Platform
 runtime-version: '50'
 sdk: org.gnome.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.node20
 command: Pulsar
 finish-args:
   - --share=network
@@ -12,6 +13,9 @@ finish-args:
   - --socket=wayland
   - --socket=pulseaudio
   - --device=dri
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.PowerManagement
+  - --talk-name=org.freedesktop.ScreenSaver
   - --env=PULSAR_DIST=flatpak
   - --env=PULSAR_REQUIREMENTS_DIR=/app/lib/pulsar/requirements
 build-options:
@@ -43,20 +47,24 @@ modules:
     sources:
       - type: git
         url: https://github.com/FuzjaJadrowa/Pulsar-Bridge.git
-        commit: e05a4245e09c6e448a073782efb8876b50c7ac2c
+        commit: ba76bab39c60c74ae4a98a70a519f1063a43c975
   - name: pulsar
     buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/node20/bin
     build-commands:
       - install -d /app/lib/pulsar/requirements
       - ln -sf /usr/bin/ffmpeg /app/lib/pulsar/requirements/ffmpeg
       - ln -sf /usr/bin/ffprobe /app/lib/pulsar/requirements/ffprobe
-      - cargo --offline build --release --manifest-path src-tauri/Cargo.toml
+      - npm ci --offline --cache flatpak-node/npm-cache
+      - npm run tauri:build -- --no-bundle
       - install -Dm755 src-tauri/target/release/Pulsar /app/bin/Pulsar
       - install -Dm644 src-tauri/flatpak/pl.fuzjajadrowa.pulsar.desktop /app/share/applications/pl.fuzjajadrowa.pulsar.desktop
       - install -Dm644 src-tauri/flatpak/pl.fuzjajadrowa.pulsar.metainfo.xml /app/share/metainfo/pl.fuzjajadrowa.pulsar.metainfo.xml
-      - install -Dm644 src/assets/icons/icon.png /app/share/icons/hicolor/512x512/apps/pl.fuzjajadrowa.pulsar.png
+      - install -Dm644 public/assets/icons/icon.png /app/share/icons/hicolor/512x512/apps/pl.fuzjajadrowa.pulsar.png
     sources:
       - type: git
         url: https://github.com/fuzjajadrowa/Pulsar.git
-        commit: d9a8598448a270ad28e77e0ec4896ea7a08f62bf
+        commit: b05f87025e1e7b1ded553679d74ab40f97c971c2
       - cargo-sources.json
+      - node-sources.json
