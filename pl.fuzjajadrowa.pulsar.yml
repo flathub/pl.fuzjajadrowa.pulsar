@@ -6,6 +6,14 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
   - org.freedesktop.Sdk.Extension.node20
 command: Pulsar
+add-extensions:
+  pl.fuzjajadrowa.pulsar.Extension.Bridge:
+    version: stable
+    directory: lib/pulsar/requirements/bridge
+    no-autodownload: false
+    autodelete: true
+cleanup-commands:
+  - mkdir -p ${FLATPAK_DEST}/lib/pulsar/requirements/bridge
 finish-args:
   - --share=network
   - --share=ipc
