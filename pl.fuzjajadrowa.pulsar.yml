@@ -1,19 +1,11 @@
 app-id: pl.fuzjajadrowa.pulsar
 runtime: org.gnome.Platform
-runtime-version: '50'
+runtime-version: '51'
 sdk: org.gnome.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
-  - org.freedesktop.Sdk.Extension.node20
+  - org.freedesktop.Sdk.Extension.node22
 command: Pulsar
-add-extensions:
-  pl.fuzjajadrowa.pulsar.Extension.Bridge:
-    version: stable
-    directory: lib/pulsar/requirements/bridge
-    no-autodownload: false
-    autodelete: true
-cleanup-commands:
-  - mkdir -p ${FLATPAK_DEST}/lib/pulsar/requirements/bridge
 finish-args:
   - --share=network
   - --share=ipc
@@ -22,8 +14,6 @@ finish-args:
   - --socket=pulseaudio
   - --device=dri
   - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.PowerManagement
-  - --talk-name=org.freedesktop.ScreenSaver
   - --env=PULSAR_DIST=flatpak
   - --env=PULSAR_REQUIREMENTS_DIR=/app/lib/pulsar/requirements
 build-options:
@@ -40,12 +30,32 @@ cleanup:
   - /share/doc
 modules:
   - shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json
-  - name: pulsar-bridge
+  - name: deno
     buildsystem: simple
     build-commands:
-      - python3 -m PyInstaller --clean --onefile --name pulsar-bridge main.py
-      - install -d /app/lib/pulsar/requirements
+      - install -Dm755 deno /app/lib/pulsar/requirements/deno
+      - install -d /app/bin
+      - ln -sf /app/lib/pulsar/requirements/deno /app/bin/deno
+    sources:
+      - type: archive
+        url: https://github.com/denoland/deno/releases/download/v2.9.8/deno-x86_64-unknown-linux-gnu.zip
+        sha256: e890975bc2549807bbcc0b584ffafda72cc7c93349dd99c80483dd784f6c4609
+        only-arches:
+          - x86_64
+      - type: archive
+        url: https://github.com/denoland/deno/releases/download/v2.9.8/deno-aarch64-unknown-linux-gnu.zip
+        sha256: d49596c20b9788cf8f5d8ddf644103d4bde56ed239753f0bdb92ba9361d51905
+        only-arches:
+          - aarch64
+  - name: pulsar-bridge
+    buildsystem: simple
+    build-options:
+      prefix: /app/lib/pulsar/requirements
+      prepend-path: /app/lib/pulsar/requirements/bin
+    build-commands:
+      - python3 -m PyInstaller --clean --onefile --icon icon.png --collect-all yt_dlp_ejs --name pulsar-bridge main.py
       - install -Dm755 dist/pulsar-bridge /app/lib/pulsar/requirements/pulsar-bridge
+      - install -Dm644 flatpak/bridge-version.txt /app/lib/pulsar/requirements/bridge-version.txt
     cleanup:
       - /bin
       - /lib/python3*/site-packages
@@ -55,11 +65,11 @@ modules:
     sources:
       - type: git
         url: https://github.com/FuzjaJadrowa/Pulsar-Bridge.git
-        commit: ba76bab39c60c74ae4a98a70a519f1063a43c975
+        tag: b32
   - name: pulsar
     buildsystem: simple
     build-options:
-      append-path: /usr/lib/sdk/node20/bin
+      append-path: /usr/lib/sdk/node22/bin
     build-commands:
       - install -d /app/lib/pulsar/requirements
       - ln -sf /usr/bin/ffmpeg /app/lib/pulsar/requirements/ffmpeg
@@ -69,10 +79,10 @@ modules:
       - install -Dm755 src-tauri/target/release/Pulsar /app/bin/Pulsar
       - install -Dm644 src-tauri/flatpak/pl.fuzjajadrowa.pulsar.desktop /app/share/applications/pl.fuzjajadrowa.pulsar.desktop
       - install -Dm644 src-tauri/flatpak/pl.fuzjajadrowa.pulsar.metainfo.xml /app/share/metainfo/pl.fuzjajadrowa.pulsar.metainfo.xml
-      - install -Dm644 public/assets/icons/icon.png /app/share/icons/hicolor/512x512/apps/pl.fuzjajadrowa.pulsar.png
+      - install -Dm644 assets/icons/pulsar/icon.png /app/share/icons/hicolor/512x512/apps/pl.fuzjajadrowa.pulsar.png
     sources:
       - type: git
         url: https://github.com/fuzjajadrowa/Pulsar.git
-        commit: b05f87025e1e7b1ded553679d74ab40f97c971c2
+        commit: 2cb316fa3d8ec866058ba5cf15ce8bf22c2eadce
       - cargo-sources.json
       - node-sources.json
